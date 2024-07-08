@@ -9,10 +9,9 @@ set $right l
 set $term foot
 
 # App launcher
-set $menu fuzzel
-
+set $menu bemenu-run --prompt ">" --fn "monospace 11" | xargs swaymsg exec --
 # Output
-output * bg /run/current-system/sw/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output * bg ./wallpaper.jpg fill
 
 ### Idle configuration
 # exec swayidle -w \
@@ -53,6 +52,15 @@ seat * {
     # Launcher
     bindsym $mod+d exec $menu
 
+    # Brightnes
+    bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+    bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+
+    # Sound
+    bindsym XF86AudioLowerVolume exec amixer set Master 5%-
+    bindsym XF86AudioRaiseVolume exec amixer set Master 5%+
+    bindsym XF86AudioMute exec amixer set Master toggle
+
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
     # Despite the name, also works for non-floating windows.
@@ -66,6 +74,9 @@ seat * {
     # Exit sway
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
+    # Change Visuals
+    default_border pixel 2
+    exec mako
 # Moving around:
 
     # Move your focus around
@@ -153,6 +164,8 @@ bindsym $mod+r mode "resize"
 # Read man 5 sway-bar
 bar {
     position top
+    font "monospace 9"
+    mode hide
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
@@ -161,7 +174,7 @@ bar {
     colors {
         statusline #ffffff
         background #000000
-        inactive_workspace #32323200 #32323200 #5c5c5c
+        inactive_workspace #000000 #000000 #5c5c5c
     }
 }
 
