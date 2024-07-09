@@ -44,6 +44,10 @@ seat * {
     idle_inhibit "keyboard"
 }
 
+### Gestures
+    bindgesture swipe:4:down exec swaylock -c 000000
+    bindswitch --locked lid:off exec swaylock -c 000000 && systemd suspend
+
 ### Key bindings
     # Term
     bindsym $mod+Return exec $term
@@ -53,8 +57,10 @@ seat * {
     bindsym $mod+d exec $menu
 
     # Brightnes
-    bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-    bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+    bindsym XF86MonBrightnessDown exec brightnessctl --min-value=4 set 5%- 
+    # && notify-send -t 400 "Brightness: $(brightnessctl -d intel_backlight | grep Current | awk -F '[()]' '{print $2}')"
+    bindsym XF86MonBrightnessUp exec brightnessctl set +5% 
+    # && notify-send -t 400 "Brightness: $(brightnessctl -d intel_backlight | grep Current | awk -F '[()]' '{print $2}')"
 
     # Sound
     bindsym XF86AudioLowerVolume exec amixer set Master 5%-
@@ -70,7 +76,6 @@ seat * {
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
-
     # Exit sway
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
