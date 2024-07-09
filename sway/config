@@ -46,7 +46,7 @@ seat * {
 
 ### Gestures
     bindgesture swipe:4:down exec swaylock -c 000000
-    bindswitch --locked lid:off exec swaylock -c 000000 && systemd suspend
+    #bindswitch --locked lid:off exec swaylock -c 000000 && systemd suspend
 
 ### Key bindings
     # Term
