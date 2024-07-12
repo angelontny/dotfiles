@@ -25,7 +25,7 @@ output * bg ./wallpaper.jpg fill
 
 ### Input configuration
 input "type:keyboard" {
-    repeat_rate 50
+    repeat_rate 100 
 }
 
 input "type:touchpad" {
@@ -80,7 +80,7 @@ seat * {
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
     # Change Visuals
-    default_border pixel 2
+    default_border pixel 1
     exec mako
 # Moving around:
 
