@@ -11,7 +11,8 @@ set $term foot
 # App launcher
 set $menu bemenu-run --prompt ">" --fn "monospace 11" | xargs swaymsg exec --
 # Output
-output * bg ./wallpaper.jpg fill
+bindsym $mod+Shift+n exec cp $(find ~/dev/others/wal -type f | shuf -n 1) ~/.config/sway/wallpaper
+output * bg ./wallpaper fill
 
 ### Idle configuration
 # exec swayidle -w \
