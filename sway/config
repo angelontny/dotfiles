@@ -9,20 +9,13 @@ set $right l
 set $term foot
 
 # App launcher
-set $menu bemenu-run --prompt ">" --fn "monospace 11" | xargs swaymsg exec --
-# Output
-bindsym $mod+Shift+n exec cp $(find ~/dev/others/wal -type f | shuf -n 1) ~/.config/sway/wallpaper
-output * bg ./wallpaper fill
+set $menu bemenu-run --prompt "" --fn "monospace 12" --ignorecase --width 0.3 --border 3 --border-radius 3 --bdr "#330000" --hp 5 --ff "#FFFFFF" --fb "#000000" --hf "#AA0000" --hb "#000000"  --nf "#FFFFFF" --nb "#000000" --af "#FFFFFF" --ab "#000000" --cf "#FFFFFF" --cb "#000000" --tf "#AA0000" --tb "#000000" | xargs swaymsg exec --
 
-### Idle configuration
-# exec swayidle -w \
-#          timeout 300 'swaylock -f -c 000000' \
-#          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#          before-sleep 'swaylock -f -c 000000'
-#
-# This will lock your screen after 300 seconds of inactivity, then turn off
-# your displays after another 300 seconds, and turn your screens back on when
-# resumed. It will also lock your screen before your computer goes to sleep.
+# Output
+exec mako
+exec wpaperd -d
+
+output HDMI-A-1 resolution 1920x1080
 
 ### Input configuration
 input "type:keyboard" {
@@ -33,7 +26,6 @@ input "type:touchpad" {
     accel_profile adaptive
     dwt enabled
     tap enabled
-    # events disabled_on_external_mouse { messes with the trackpad after removal }
     middle_emulation enabled
     natural_scroll enabled
     tap_button_map lrm
@@ -46,8 +38,7 @@ seat * {
 }
 
 ### Gestures
-    bindgesture swipe:4:down exec swaylock -c 000000
-    #bindswitch --locked lid:off exec swaylock -c 000000 && systemd suspend
+    bindgesture swipe:4:down exec swaylock -c 000000 --indicator-radius 150
 
 ### Key bindings
     # Term
@@ -58,34 +49,41 @@ seat * {
     bindsym $mod+d exec $menu
 
     # Brightnes
-    bindsym XF86MonBrightnessDown exec brightnessctl --min-value=4 set 5%- 
-    # && notify-send -t 400 "Brightness: $(brightnessctl -d intel_backlight | grep Current | awk -F '[()]' '{print $2}')"
-    bindsym XF86MonBrightnessUp exec brightnessctl set +5% 
-    # && notify-send -t 400 "Brightness: $(brightnessctl -d intel_backlight | grep Current | awk -F '[()]' '{print $2}')"
+    bindsym XF86MonBrightnessDown exec brightnessctl --min-value=4 set 5%- && notify-send -t 500 \
+    "Brightness: $(brightnessctl -d intel_backlight | grep Current | awk -F '[()]' '{print $2}')" \
+    -h string:x-canonical-private-synchronous:my-notification
+
+    bindsym XF86MonBrightnessUp exec brightnessctl set +5% && notify-send -t 500 \
+    "Brightness: $(brightnessctl -d intel_backlight | grep Current | awk -F '[()]' '{print $2}')" \
+    -h string:x-canonical-private-synchronous:my-notification
 
     # Sound
-    bindsym XF86AudioLowerVolume exec amixer set Master 5%-
-    bindsym XF86AudioRaiseVolume exec amixer set Master 5%+
+    bindsym XF86AudioLowerVolume exec amixer set Master 5%- && notify-send -t 500 \
+    "Audio: $(amixer get Master | grep 'Front Right' | awk -F'[][]' '{printf "%s", $2}')" \
+    -h string:x-canonical-private-synchronous:my-notification
+
+    bindsym XF86AudioRaiseVolume exec amixer set Master 5%+ && notify-send -t 500 \
+    "Audio: $(amixer get Master | grep 'Front Right' | awk -F'[][]' '{printf "%s", $2}')" \
+    -h string:x-canonical-private-synchronous:my-notification
+
     bindsym XF86AudioMute exec amixer set Master toggle
+    bindsym $mod+Shift+S exec systemctl hibernate
 
     # Screenshot
     bindsym Print exec grim -g "$(slurp -d)" - | wl-copy
-
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
     floating_modifier $mod normal
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
+
     # Exit sway
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
     # Change Visuals
     default_border pixel 1
-    exec mako
+    hide_edge_borders both
+    gaps inner 10
+
 # Moving around:
 
     # Move your focus around
@@ -99,6 +97,14 @@ seat * {
     bindsym $mod+Shift+$down move down
     bindsym $mod+Shift+$up move up
     bindsym $mod+Shift+$right move right
+
+# Default Workspaces
+    #[app_id="firefox"]
+    workspace_auto_back_and_forth yes
+    for_window [app_id="firefox"] move window to workspace 9󰈹
+    for_window [app_id="zathura"] move window to workspace 8, opacity set 0.85
+    for_window [app_id="foot"] opacity set 0.8
+    workspace 9 gaps inner 0
 
 # Workspaces:
 
@@ -173,7 +179,7 @@ bindsym $mod+r mode "resize"
 # Read man 5 sway-bar
 bar {
     position top
-    font "monospace 9"
+    font "monospace 11"
     mode hide
 
     # When the status_command prints a new line to stdout, swaybar updates.
@@ -181,9 +187,13 @@ bar {
     status_command while date +'%d/%m | %X'; do sleep 1; done
 
     colors {
+        gaps 10
         statusline #ffffff
         background #000000
-        inactive_workspace #000000 #000000 #5c5c5c
+        inactive_workspace #000000 #000000 #ffffff
+        active_workspace #000000 #000000 #00aa00
+        focused_workspace #000000 #000000 #aa0000
+        strip_workspace_numbers yes
     }
 }
 

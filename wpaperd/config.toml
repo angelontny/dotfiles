@@ -1,0 +1,5 @@
+[any]
+path = "/home/angelo/dat/walls-main/digital/"
+transition-time=700
+duration = "30s"
+
